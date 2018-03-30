@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<body>
+
+
+<p>Input:</p>
+<select id="inputDropdown" onchange="changeInputLabels()">
+  <option value="ax">Ax + By = C</option>
+  <option value="pp">(x1, y1), (x2, y2)</option>
+  <option value="ps">(x, y), m</option>
+</select>
+
+<br>
+<br>
+<label for="tb0" id="tb0l">A:</label>
+<input type="text" id="tb0">
+<br>
+<label for="tb1" id="tb1l">B:</label>
+<input type="text" id="tb1">
+<br>
+<label for="tb2" id="tb2l">C:</label>
+<input type="text" id="tb2">
+<br>
+<label for="tb3" id="tb3l">NA</label>
+<input type="text" id="tb3" disabled>
+
+<script>
+  
+var labels = [["A","B","C","NA"],["x1","y1","x2","y2"],["x","y","m","NA"]];
+  
+function changeInputLabels() {
+    var x = document.getElementById("inputDropdown").selectedIndex;
+    for(i = 0; i<4; ++i){
+      document.getElementById("tb" + i + "l").innerHTML = labels[x][i] + ":";
+      document.getElementById("tb" + i).value = "";
+    }
+    if(x !== 1){
+      document.getElementById("tb3").disabled = true;
+    }
+    else{
+      document.getElementById("tb3").disabled = false;
+    }
+}
+</script>
+
+</body>
