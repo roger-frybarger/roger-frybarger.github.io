@@ -3,7 +3,7 @@
 
 
 <p>Input:</p>
-<select id="inputDropdown" onchange="changeInputLabels()">
+<select id="inputDropdown" onchange="changeInputLabels();">
   <option value="ax">Ax + By = C</option>
   <option value="pp">(x1, y1), (x2, y2)</option>
   <option value="ps">(x, y), m</option>
@@ -23,13 +23,23 @@
 <label for="tb3" id="tb3l">NA</label>
 <input type="text" id="tb3" disabled>
 
+<br>
+<br>
+<button type="button" onclick="calculateResult();">Calculate</button>
+
+<br>
+<p>Result:</p>
+<input type="text" id="result" disabled>
+
+
+
 <script>
   
 var labels = [["A","B","C","NA"],["x1","y1","x2","y2"],["x","y","m","NA"]];
   
 function changeInputLabels() {
     var x = document.getElementById("inputDropdown").selectedIndex;
-    for(i = 0; i<4; ++i){
+    for(var i = 0; i<4; ++i){
       document.getElementById("tb" + i + "l").innerHTML = labels[x][i] + ":";
       document.getElementById("tb" + i).value = "";
     }
@@ -40,6 +50,48 @@ function changeInputLabels() {
       document.getElementById("tb3").disabled = false;
     }
 }
+
+
+function calculateResult(){
+  var i = document.getElementById("inputDropdown").selectedIndex;
+  var valid = checkInput(i);
+  switch(i){
+    case 0:
+      //from
+    break;
+    case 1:
+    break;
+    case 2:
+    break;
+    default:
+    
+  }
+  
+}
+
+function checkInput(i){
+  for(var c = 0; c < 3; ++c){
+    var txt = document.getElementById("tb" + c).value;
+    if(txt == ""){
+      console.log("txt empty");
+      return false;
+    }
+    var pieces = txt.split("/");
+    if(pieces.length > 2){
+      console.log("more than 2 pieces");
+      return false;
+    }
+    for (var z = 0; z < pieces.length; ++z){
+      var num = parseInt(pieces[z]);
+      if(isNaN(num)){
+        console.log("Not Number");
+        return false;
+      }
+    }
+  }
+}
+
+
 </script>
 
 </body>
