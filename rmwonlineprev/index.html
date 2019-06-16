@@ -86,7 +86,7 @@
         <li class="dropdown">
           <a class="dropbtn" onclick="fileBtnFunction();" id="fileBtn">File</a>
             <div class="dropdown-content" id="fileDropdown">
-              <a id="reMaximizeBtn" onclick="alert('Unfortunately, this functionality is only available in the full version at the moment.');">Re-Maximize</a>
+              <a id="reMaximizeBtn" onclick="alert('Unfortunately, this functionality is only available in the full version at the moment. You can download the full version for free from rogersmathwhiteboard.com.');">Re-Maximize</a>
               <a href="#" onclick="OIDReadyOpenImagesDialog();" id="openImagesBtn">Open Images</a>
               <a href="#" onclick="SIDReadySaveImagesDialog();" id="saveImagesBtn">Save Images</a>
               <a id="fileCloseBtn" onclick="alert('Sorry, this functionality is only available in the full version. If you would like to close this app, you can use the close button on your browser.');">Close</a>
@@ -193,12 +193,14 @@
               <select id="SDCursorDropdown">
                 <option value="default">default</option>
                 <option value="crosshair">crosshair</option>
+                <!-- These options are not allowed in the online version.
                 <option value="u0">large white</option>
                 <option value="u1">very large white</option>
                 <option value="u2">massive white</option>
                 <option value="u3">large red</option>
                 <option value="u4">very large red</option>
                 <option value="u5">massive red</option>
+                -->
                 <option value="none">none</option>
               </select>
             </li>
@@ -208,7 +210,7 @@
             <li><input id="SDUseWidscreenTemplates" type="checkbox" value="false"> Optimize for wide-screen use where possible.</li>
             <li><input id="SDUseColorInvertedTemplates" type="checkbox" value="false"> Use color inverted templates where possible. (This is useful if you prefer a black background.)</li>
             
-            <li>***Note: More features such as auto-save are avaliable in the full version of Roger's Math Whiteboard.***</li>
+            <li>***Note: More features such as auto-save and other various cursor images are avaliable in the full version of Roger's Math Whiteboard.***</li>
             
           </ul>
           
@@ -623,7 +625,7 @@ Public License instead of this License.
 
           </textarea>
           <br>
-          <a class="modalBoxKeypadBtns" onclick="alert('Unfortunately, this functionality is only available in the full version.');">Copy License To Clipboard</a>
+          <a class="modalBoxKeypadBtns" onclick="alert('Unfortunately, this functionality is only available in the full version. You can download the full version for free from rogersmathwhiteboard.com.');">Copy License To Clipboard</a>
           
         </div>
       </div>
