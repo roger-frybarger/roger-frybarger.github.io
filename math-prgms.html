@@ -23,6 +23,14 @@
 <label for="tb3" id="tb3l">NA</label>
 <input type="text" id="tb3" disabled>
 
+<br>
+<br>
+<button onclick="convert();">Convert</button>
+
+<br>
+<br>
+<input type="text" id="outputbox" size="40" disabled>
+
 <script>
   
 var labels = [["A","B","C","NA"],["x1","y1","x2","y2"],["x","y","m","NA"]];
@@ -40,6 +48,38 @@ function changeInputLabels() {
       document.getElementById("tb3").disabled = false;
     }
 }
+
+
+function convert(){
+  var typeOfInput = document.getElementById("inputDropdown").selectedIndex;
+  
+  var txt0 = document.getElementById("tb0").value
+  var txt1 = document.getElementById("tb1").value
+  var txt2 = document.getElementById("tb2").value
+  
+  if(typeOfInput == 0){
+    convertFromAxbyc(txt0, txt1, txt2);
+  }
+  if(typeOfInput == 1){
+    convertFromX1Y1X2Y2(txt0, txt1, txt2);
+  }
+  if(typeOfInput == 2){
+    convertFromXYM(txt0, txt1, txt2);
+  }
+}
+
+function convertFromAxbyc(){
+  
+}
+
+function convertFromX1Y1X2Y2(){
+  
+}
+
+function convertFromXYM(){
+  
+}
+
 </script>
 
 </body>
