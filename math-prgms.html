@@ -57,6 +57,10 @@ function convert(){
   var txt1 = document.getElementById("tb1").value
   var txt2 = document.getElementById("tb2").value
   
+  txt0 = getDec(txt0);
+  txt1 = getDec(txt1);
+  txt2 = getDec(txt2);
+  
   if(typeOfInput == 0){
     convertFromAxbyc(txt0, txt1, txt2);
   }
@@ -68,16 +72,64 @@ function convert(){
   }
 }
 
-function convertFromAxbyc(){
+function getDec(txt){
+  if(txt.indexOf("/") !== -1){
+    var s = txt.split('/');
+    var result = parseInt(s[0], 10) / parseInt(s[1], 10);
+    return result;
+  }
+  else{
+    return parseFloat(txt);
+  }
+}
+
+function convertFromAxbyc(t0, t1, t2){
+  var A = t0;
+  var B = t1;
+  var C = t2;
   
 }
 
-function convertFromX1Y1X2Y2(){
+function convertFromX1Y1X2Y2(t0, t1, t2){
   
 }
 
-function convertFromXYM(){
+function convertFromXYM(t0, t1, t2){
   
+}
+
+function toFraction(dec) {
+  
+  // Source: https://stackoverflow.com/a/15193615   And then modified slightly.
+    var num;
+    var den
+    var is_neg = dec < 0;
+    dec = Math.abs(dec);
+    var done = false;
+    //you can adjust the epsilon to a larger number if you don't need very high precision
+    var n1 = 0, d1 = 1, n2 = 1, d2 = 0, n = 0, q = dec, epsilon = 1e-13;
+    while (!done) {
+        n++;
+        if (n > 10000) {
+            done = true;
+        }
+        var a = parseInt(q);
+        num = n1 + a * n2;
+        den = d1 + a * d2;
+        var e = (q - a);
+        if (e < epsilon) {
+            done = true;
+        }
+        q = 1 / e;
+        n1 = n2;
+        d1 = d2;
+        n2 = num;
+        d2 = den;
+        if (Math.abs(num / den - dec) < epsilon || n > 30) {
+            done = true;
+        }
+    }
+    return [is_neg ? -num : num, den];
 }
 
 </script>
