@@ -28,25 +28,31 @@
 <button onclick="convert();">Convert</button>
 
 <br>
+
+<p>Output:</p>
+
+<input type="text" id="outputbox" size="40" readonly>
+
 <br>
-<input type="text" id="outputbox" size="40" disabled>
+
+<p>Creating a program similar to this one on a TI-83 graphing calculator is what originally inspired Roger to explore computer programming.</p>
 
 <script>
-  
+
 var labels = [["A","B","C","NA"],["x1","y1","x2","y2"],["x","y","m","NA"]];
   
-function changeInputLabels() {
-    var x = document.getElementById("inputDropdown").selectedIndex;
-    for(i = 0; i<4; ++i){
-      document.getElementById("tb" + i + "l").innerHTML = labels[x][i] + ":";
-      document.getElementById("tb" + i).value = "";
-    }
-    if(x !== 1){
-      document.getElementById("tb3").disabled = true;
-    }
-    else{
-      document.getElementById("tb3").disabled = false;
-    }
+function changeInputLabels(){
+  var x = document.getElementById("inputDropdown").selectedIndex;
+  for(i = 0; i<4; ++i){
+    document.getElementById("tb" + i + "l").innerHTML = labels[x][i] + ":";
+    document.getElementById("tb" + i).value = "";
+  }
+  if(x !== 1){
+    document.getElementById("tb3").disabled = true;
+  }
+  else{
+    document.getElementById("tb3").disabled = false;
+  }
 }
 
 
@@ -83,53 +89,93 @@ function getDec(txt){
   }
 }
 
+function toFraction(dec) {
+  
+  // Source: https://stackoverflow.com/a/15193615   And then modified slightly.
+  var num;
+  var den
+  var is_neg = dec < 0;
+  dec = Math.abs(dec);
+  var done = false;
+  //you can adjust the epsilon to a larger number if you don't need very high precision
+  var n1 = 0, d1 = 1, n2 = 1, d2 = 0, n = 0, q = dec, epsilon = 1e-13;
+  while (!done){
+    n++;
+    if (n > 10000) {
+      done = true;
+    }
+    var a = parseInt(q);
+    num = n1 + a * n2;
+    den = d1 + a * d2;
+    var e = (q - a);
+    if (e < epsilon) {
+      done = true;
+    }
+    q = 1 / e;
+    n1 = n2;
+    d1 = d2;
+    n2 = num;
+    d2 = den;
+    if (Math.abs(num / den - dec) < epsilon || n > 30) {
+      done = true;
+    }
+  }
+  return [is_neg ? -num : num, den];
+}
+
+function figureOutHowToDisplayDec(dec){
+  var decAsStr = " " + dec;
+  if(decAsStr.indexOf("Infinity") !== -1){return "Infinity";}
+  if(isNaN(dec)){return "NaN";}
+  //alert('GotPast ' + dec);
+  if(dec == 0.0){return "0";}
+  if(dec == parseInt(dec)){return "" + parseInt(dec);}
+  
+  var aBack = toFraction(dec);
+  var numAndDen = "" + aBack[0] + "/" + aBack[1];
+  if(numAndDen.length > 8){return "" + dec;}
+  return numAndDen;
+  
+}
+
+function updateOutputBox(m, b){
+  m = figureOutHowToDisplayDec(m);
+  b = figureOutHowToDisplayDec(b);
+  
+  var outputText = "y=" + m +"x+" + b;
+  document.getElementById("outputbox").value = outputText;
+}
+
 function convertFromAxbyc(t0, t1, t2){
   var A = t0;
   var B = t1;
   var C = t2;
   
+  var m = -( A / B );
+  var b = C / B;
+  
+  updateOutputBox(m, b);
 }
 
 function convertFromX1Y1X2Y2(t0, t1, t2){
+  var x1 = t0;
+  var y1 = t1;
+  var x2 = t2;
+  var y2 = getDec(document.getElementById("tb3").value);
   
+  var m = (y2 - y1) / (x2 - x1);
+  var b = y1 - (m * x1);
+  
+  updateOutputBox(m, b);
 }
 
 function convertFromXYM(t0, t1, t2){
+  var x = t0;
+  var y = t1;
+  var m = t2;
+  var b = y - (m * x);
   
-}
-
-function toFraction(dec) {
-  
-  // Source: https://stackoverflow.com/a/15193615   And then modified slightly.
-    var num;
-    var den
-    var is_neg = dec < 0;
-    dec = Math.abs(dec);
-    var done = false;
-    //you can adjust the epsilon to a larger number if you don't need very high precision
-    var n1 = 0, d1 = 1, n2 = 1, d2 = 0, n = 0, q = dec, epsilon = 1e-13;
-    while (!done) {
-        n++;
-        if (n > 10000) {
-            done = true;
-        }
-        var a = parseInt(q);
-        num = n1 + a * n2;
-        den = d1 + a * d2;
-        var e = (q - a);
-        if (e < epsilon) {
-            done = true;
-        }
-        q = 1 / e;
-        n1 = n2;
-        d1 = d2;
-        n2 = num;
-        d2 = den;
-        if (Math.abs(num / den - dec) < epsilon || n > 30) {
-            done = true;
-        }
-    }
-    return [is_neg ? -num : num, den];
+  updateOutputBox(m, b);
 }
 
 </script>
