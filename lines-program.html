@@ -1,9 +1,20 @@
 <!DOCTYPE HTML>
+
+<head>
+
+<title>Roger's Lines Program.</title>
+
+<meta name="description" content="This page allows one to convert a line to y=mx+b (or slope-intercept) format."/>
+
+</head>
+
 <body>
 
 
+<p>Welcome to Roger's Lines Program!:</p>
+
 <p>Input:</p>
-<select id="inputDropdown" onchange="changeInputLabels()">
+<select id="inputDropdown" onchange="changeInputLabels();">
   <option value="ax">Ax + By = C</option>
   <option value="pp">(x1, y1), (x2, y2)</option>
   <option value="ps">(x, y), m</option>
@@ -11,6 +22,7 @@
 
 <br>
 <br>
+<p>The boxes below will accept negative and positive whole numbers, decimals, fractions and improper fractions:</p>
 <label for="tb0" id="tb0l">A:</label>
 <input type="text" id="tb0">
 <br>
@@ -20,7 +32,7 @@
 <label for="tb2" id="tb2l">C:</label>
 <input type="text" id="tb2">
 <br>
-<label for="tb3" id="tb3l">NA</label>
+<label for="tb3" id="tb3l">NA:</label>
 <input type="text" id="tb3" disabled>
 
 <br>
@@ -41,6 +53,9 @@
 
 var labels = [["A","B","C","NA"],["x1","y1","x2","y2"],["x","y","m","NA"]];
   
+  
+// This function runs every time the user selects a different type of line to input and
+// changes the interface to relate to that type of input:
 function changeInputLabels(){
   var x = document.getElementById("inputDropdown").selectedIndex;
   for(i = 0; i<4; ++i){
@@ -55,7 +70,9 @@ function changeInputLabels(){
   }
 }
 
-
+// This function runs every time the user clicks/taps the "Convert" button.
+// It does some innitial input cleanup and then hands controll off to the
+// applicable function.
 function convert(){
   var typeOfInput = document.getElementById("inputDropdown").selectedIndex;
   
@@ -78,6 +95,7 @@ function convert(){
   }
 }
 
+// This function handles parsing the user's input and accepting fractions as the inputed values:
 function getDec(txt){
   if(txt.indexOf("/") !== -1){
     var s = txt.split('/');
@@ -89,6 +107,10 @@ function getDec(txt){
   }
 }
 
+
+// This function was not written by Roger, but does seem to do a nice job of handling
+// the conversion of decimals into improper fractions. Roger found it at the applicable
+// link below and appreciates the work of the orriginal author.
 function toFraction(dec) {
   
   // Source: https://stackoverflow.com/a/15193615   And then modified slightly.
@@ -123,6 +145,11 @@ function toFraction(dec) {
   return [is_neg ? -num : num, den];
 }
 
+
+// This function handles turning the final decimals into displayable text.
+// If the input decimal is not something that is directly displayable, it
+// will attempt to run it through the toFraction() function to display an
+// improper fraction if possible.
 function figureOutHowToDisplayDec(dec){
   var decAsStr = " " + dec;
   if(decAsStr.indexOf("Infinity") !== -1){return "Infinity";}
@@ -138,13 +165,21 @@ function figureOutHowToDisplayDec(dec){
   
 }
 
+// This function handles displaying the result of the calculation.
 function updateOutputBox(m, b){
   m = figureOutHowToDisplayDec(m);
   b = figureOutHowToDisplayDec(b);
   
-  var outputText = "y=" + m +"x+" + b;
+  var sym = "";
+  if(b.charAt(0) !== '-'){sym = "+";}
+  
+  var outputText = "y=" + m + "x" + sym + b;
   document.getElementById("outputbox").value = outputText;
 }
+
+
+// The below functions simply handle the algebraic aspect of converting the
+// applicable form of a line into y=mx+b format:
 
 function convertFromAxbyc(t0, t1, t2){
   var A = t0;
