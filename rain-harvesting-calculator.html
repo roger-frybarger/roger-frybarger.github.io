@@ -1,0 +1,230 @@
+<!DOCTYPE HTML>
+
+<head>
+
+<title>Roger's Rainfall, Catchment Area, and Water Program.</title>
+
+<meta name="description" content="This page allows one to play with variables such as annual rainfall available/needed, catchment area available/needed, and amount of water generated/needed when contemplating a rainwater catchment system."/>
+
+</head>
+
+<body>
+
+
+<h2>Welcome to Roger's Rainfall, Catchment Area, and Water Program!</h2>
+
+<p>When contemplating building a rainwater catchment system, there are a bewildering number of variables to juggle. I created the program below to give you the ability to easily play around with three of these variables. I have crafted this program so that, (unlike many of the other free calculators on the internet today), you can input any two of the relevant variables and have the third one calculated for you. The three variables that I was mostly concerned with are: 1. The annual rainfall that is available at your location or that is required to meet your needs. 2. The catchment area that you have available, are considering building, or that you would need in order to meet your needs. 3. The quantity of water, (measured on an annual basis), that your system would provide, or that you would require to meet your needs. To use the program, simply select the variable that you would like to calculate from the dropdown, choose the type of units that you prefer, fill in the other two fields with values that correspond to your situation, and click calculate.</p>
+
+<p>Please keep in mind that the values produced by this program are hypothetical in nature and do not take into account things such as evaporation losses, droughts, excessive rainfall events, changes in your local climate, temperature, rain shadows, local micro-climates, etc… You should not rely solely on the values produced by this program when you are designing your system. This program is only intended for hypothetical exploration of ‘what if...’ scenarios. If you choose to use the values produced by this program for purposes other than that, you do so at your own risk. Furthermore, the values that this program produces are only averages based on an average annual rainfall. The annual rainfall at a particular location in a particular year may be higher or lower than the values that this program provides or allows you to input. Therefore, do not assume that you can safely rely solely on rainwater catchment to provide the water that you need. This program only allows you to see a hypothetical scenario that would, on average, provide the relevant amount of water. Also, please keep in mind that rainwater collection may or may not be legal where you live. Check with the applicable government agency to ensure that rainwater collection is legal in your area before attempting to build such a system.</p>
+
+<p>********************************</p>
+
+<p>What variable would you like this program to calculate for you:</p>
+<select id="inputDropdown" onchange="">
+  <option value="">The average annual rainfall that would be required at your location in order to, (on average), meet your water needs.</option>
+  <option value="">The catchment area that would be required in order to, (on average), meet your water needs.</option>
+  <option value="">The yearly quantity of water that the system would, (on average), provide.</option>
+</select>
+
+<br>
+
+<p>What unit system do you prefer:</p>
+<select id="unitDropdown" onchange="">
+  <option value="imperial">Imperial.</option>
+  <option value="metric">Metric.</option>
+</select>
+
+<br>
+<br>
+
+<label id="tb0l">The annual rainfall that is available at your location or that would be required to meet your needs is:</label>
+<br>
+<input type="number" step="any" id="b0" readonly><label id="inches">Inches.</label>
+<br>
+<br>
+<label id="tb1l">The catchment area that you have available, are considering building, or that you would need in order to meet your needs is:</label>
+<br>
+<input type="number" step="any" id="b1"><label id="sqft">Square Feet.</label>
+<br>
+<br>
+<label id="tb2l">The quantity of water, (measured on an annual basis), that your system would provide, or that you would require to meet your needs is:</label>
+<br>
+<input type="number" step="any" id="b2"><label id="gallons">Gallons.</label>
+<br>
+
+<br>
+<br>
+<button onclick="">Calculate</button>
+
+<br>
+<br>
+<br>
+
+
+<script>
+
+//var labels = [["A","B","C","NA"],["x1","y1","x2","y2"],["x","y","m","NA"]];
+  
+  
+//// This function runs every time the user selects a different type of line to input and
+//// changes the interface to relate to that type of input:
+//function changeInputLabels(){
+  //var x = document.getElementById("inputDropdown").selectedIndex;
+  //for(i = 0; i<4; ++i){
+    //document.getElementById("tb" + i + "l").innerHTML = labels[x][i] + ":";
+    //document.getElementById("tb" + i).value = "";
+  //}
+  //if(x !== 1){
+    //document.getElementById("tb3").disabled = true;
+  //}
+  //else{
+    //document.getElementById("tb3").disabled = false;
+  //}
+//}
+
+//// This function runs every time the user clicks/taps the "Convert" button.
+//// It does some innitial input cleanup and then hands controll off to the
+//// applicable function.
+//function convert(){
+  //var typeOfInput = document.getElementById("inputDropdown").selectedIndex;
+  
+  //var txt0 = document.getElementById("tb0").value
+  //var txt1 = document.getElementById("tb1").value
+  //var txt2 = document.getElementById("tb2").value
+  
+  //txt0 = getDec(txt0);
+  //txt1 = getDec(txt1);
+  //txt2 = getDec(txt2);
+  
+  //if(typeOfInput == 0){
+    //convertFromAxbyc(txt0, txt1, txt2);
+  //}
+  //if(typeOfInput == 1){
+    //convertFromX1Y1X2Y2(txt0, txt1, txt2);
+  //}
+  //if(typeOfInput == 2){
+    //convertFromXYM(txt0, txt1, txt2);
+  //}
+//}
+
+//// This function handles parsing the user's input and accepting fractions as the inputed values:
+//function getDec(txt){
+  //if(txt.indexOf("/") !== -1){
+    //var s = txt.split('/');
+    //var result = parseInt(s[0], 10) / parseInt(s[1], 10);
+    //return result;
+  //}
+  //else{
+    //return parseFloat(txt);
+  //}
+//}
+
+
+//// This function was not written by Roger, but does seem to do a nice job of handling
+//// the conversion of decimals into improper fractions. Roger found it at the applicable
+//// link below and appreciates the work of the orriginal author.
+//function toFraction(dec) {
+  
+  //// Source: https://stackoverflow.com/a/15193615   And then modified slightly.
+  //var num;
+  //var den
+  //var is_neg = dec < 0;
+  //dec = Math.abs(dec);
+  //var done = false;
+  ////you can adjust the epsilon to a larger number if you don't need very high precision
+  //var n1 = 0, d1 = 1, n2 = 1, d2 = 0, n = 0, q = dec, epsilon = 1e-13;
+  //while (!done){
+    //n++;
+    //if (n > 10000) {
+      //done = true;
+    //}
+    //var a = parseInt(q);
+    //num = n1 + a * n2;
+    //den = d1 + a * d2;
+    //var e = (q - a);
+    //if (e < epsilon) {
+      //done = true;
+    //}
+    //q = 1 / e;
+    //n1 = n2;
+    //d1 = d2;
+    //n2 = num;
+    //d2 = den;
+    //if (Math.abs(num / den - dec) < epsilon || n > 30) {
+      //done = true;
+    //}
+  //}
+  //return [is_neg ? -num : num, den];
+//}
+
+
+//// This function handles turning the final decimals into displayable text.
+//// If the input decimal is not something that is directly displayable, it
+//// will attempt to run it through the toFraction() function to display an
+//// improper fraction if possible.
+//function figureOutHowToDisplayDec(dec){
+  //var decAsStr = " " + dec;
+  //if(decAsStr.indexOf("Infinity") !== -1){return "Infinity";}
+  //if(isNaN(dec)){return "NaN";}
+  ////alert('GotPast ' + dec);
+  //if(dec == 0.0){return "0";}
+  //if(dec == parseInt(dec)){return "" + parseInt(dec);}
+  
+  //var aBack = toFraction(dec);
+  //var numAndDen = "" + aBack[0] + "/" + aBack[1];
+  //if(numAndDen.length > 8){return "" + dec;}
+  //return numAndDen;
+  
+//}
+
+//// This function handles displaying the result of the calculation.
+//function updateOutputBox(m, b){
+  //m = figureOutHowToDisplayDec(m);
+  //b = figureOutHowToDisplayDec(b);
+  
+  //var sym = "";
+  //if(b.charAt(0) !== '-'){sym = "+";}
+  
+  //var outputText = "y=" + m + "x" + sym + b;
+  //document.getElementById("outputbox").value = outputText;
+//}
+
+
+//// The below functions simply handle the algebraic aspect of converting the
+//// applicable form of a line into y=mx+b format:
+
+//function convertFromAxbyc(t0, t1, t2){
+  //var A = t0;
+  //var B = t1;
+  //var C = t2;
+  
+  //var m = -( A / B );
+  //var b = C / B;
+  
+  //updateOutputBox(m, b);
+//}
+
+//function convertFromX1Y1X2Y2(t0, t1, t2){
+  //var x1 = t0;
+  //var y1 = t1;
+  //var x2 = t2;
+  //var y2 = getDec(document.getElementById("tb3").value);
+  
+  //var m = (y2 - y1) / (x2 - x1);
+  //var b = y1 - (m * x1);
+  
+  //updateOutputBox(m, b);
+//}
+
+//function convertFromXYM(t0, t1, t2){
+  //var x = t0;
+  //var y = t1;
+  //var m = t2;
+  //var b = y - (m * x);
+  
+  //updateOutputBox(m, b);
+//}
+
+</script>
+
+</body>
