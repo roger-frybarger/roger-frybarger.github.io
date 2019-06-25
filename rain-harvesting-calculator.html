@@ -29,7 +29,7 @@
 <br>
 
 <p>What unit system do you prefer:</p>
-<select id="unitDropdown" onchange="">
+<select id="unitDropdown" onchange="changePreferedUnitSystem();">
   <option value="imperial">Imperial.</option>
   <option value="metric">Metric.</option>
 </select>
@@ -62,6 +62,29 @@
 
 
 <script>
+  
+  
+  
+  
+  
+  
+  
+function changePreferedUnitSystem(){
+  var x = document.getElementById("unitDropdown").selectedIndex;
+  if(x == 1){
+    // Change all the labels to metric:
+    document.getElementById("inches").innerHTML = "Centimeters.";
+    document.getElementById("sqft").innerHTML = "Square Meters.";
+    document.getElementById("gallons").innerHTML = "Liters.";
+  }
+  else{
+    // Set them all to imperial:
+    document.getElementById("inches").innerHTML = "Inches.";
+    document.getElementById("sqft").innerHTML = "Square Feet.";
+    document.getElementById("gallons").innerHTML = "Gallons.";
+  }
+  
+}
 
 //var labels = [["A","B","C","NA"],["x1","y1","x2","y2"],["x","y","m","NA"]];
   
