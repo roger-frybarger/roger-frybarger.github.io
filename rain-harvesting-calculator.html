@@ -20,7 +20,7 @@
 <p>********************************</p>
 
 <p>What variable would you like this program to calculate for you:</p>
-<select id="inputDropdown" onchange="">
+<select id="inputDropdown" onchange="changeComputedValue();">
   <option value="">The average annual rainfall that would be required at your location in order to, (on average), meet your water needs.</option>
   <option value="">The catchment area that would be required in order to, (on average), meet your water needs.</option>
   <option value="">The yearly quantity of water that the system would, (on average), provide.</option>
@@ -39,22 +39,22 @@
 
 <label id="tb0l">The annual rainfall that is available at your location or that would be required to meet your needs is:</label>
 <br>
-<input type="number" step="any" id="b0" readonly><label id="inches">Inches.</label>
+<input type="number" step="any" id="b0" value="0"><label id="inches">Inches.</label>
 <br>
 <br>
 <label id="tb1l">The catchment area that you have available, are considering building, or that you would need in order to meet your needs is:</label>
 <br>
-<input type="number" step="any" id="b1"><label id="sqft">Square Feet.</label>
+<input type="number" step="any" id="b1" value="0"><label id="sqft">Square Feet.</label>
 <br>
 <br>
 <label id="tb2l">The quantity of water, (measured on an annual basis), that your system would provide, or that you would require to meet your needs is:</label>
 <br>
-<input type="number" step="any" id="b2"><label id="gallons">Gallons.</label>
+<input type="number" step="any" id="b2" value="0"><label id="gallons">Gallons.</label>
 <br>
 
 <br>
 <br>
-<button onclick="">Calculate</button>
+<button onclick="calculateStuff();">Calculate</button>
 
 <br>
 <br>
@@ -64,12 +64,45 @@
 <script>
   
   
+changeComputedValue();
+changePreferedUnitSystem();
+
   
   
+function clearCalculator(){
+  document.getElementById("b0").value = 0;
+  document.getElementById("b1").value = 0;
+  document.getElementById("b2").value = 0;
+}
+
+function changeComputedValue(){
+  // Immediately clear out all of the boxes since they may not hold the correct
+  // values now.
+  clearCalculator();
   
-  
+  var x = document.getElementById("inputDropdown").selectedIndex;
+  if(x == 0){ // This means they want to know the annual rainfall required, so....
+    document.getElementById("b0").readOnly = true;
+    document.getElementById("b1").readOnly = false;
+    document.getElementById("b2").readOnly = false;
+  }
+  if(x == 1){ // This means they want to know the required catchment area, so....
+    document.getElementById("b0").readOnly = false;
+    document.getElementById("b1").readOnly = true;
+    document.getElementById("b2").readOnly = false;
+  }
+  if(x == 2){ // This means they want to know the yearly amount of water that their system will produce, so....
+    document.getElementById("b0").readOnly = false;
+    document.getElementById("b1").readOnly = false;
+    document.getElementById("b2").readOnly = true;
+  }
+}
   
 function changePreferedUnitSystem(){
+  // Immediately clear out all of the boxes since they will not hold the correct
+  // values now that they have changed the prefered unit system.
+  clearCalculator();
+  
   var x = document.getElementById("unitDropdown").selectedIndex;
   if(x == 1){
     // Change all the labels to metric:
@@ -83,170 +116,27 @@ function changePreferedUnitSystem(){
     document.getElementById("sqft").innerHTML = "Square Feet.";
     document.getElementById("gallons").innerHTML = "Gallons.";
   }
+}
+
+function calculateStuff(){
+  // First, let's figure out which unit system they prefer:
+  var x = document.getElementById("unitDropdown").selectedIndex;
+  if(x == 0){ // If they have selected imperial...
+    calculateImperial();
+  }
+  else{ // If they haven't selected imperial...
+    calculateMetric();
+  }
+}
+
+function calculateImperial(){
   
 }
 
-//var labels = [["A","B","C","NA"],["x1","y1","x2","y2"],["x","y","m","NA"]];
+function calculateMetric(){
   
-  
-//// This function runs every time the user selects a different type of line to input and
-//// changes the interface to relate to that type of input:
-//function changeInputLabels(){
-  //var x = document.getElementById("inputDropdown").selectedIndex;
-  //for(i = 0; i<4; ++i){
-    //document.getElementById("tb" + i + "l").innerHTML = labels[x][i] + ":";
-    //document.getElementById("tb" + i).value = "";
-  //}
-  //if(x !== 1){
-    //document.getElementById("tb3").disabled = true;
-  //}
-  //else{
-    //document.getElementById("tb3").disabled = false;
-  //}
-//}
+}
 
-//// This function runs every time the user clicks/taps the "Convert" button.
-//// It does some innitial input cleanup and then hands controll off to the
-//// applicable function.
-//function convert(){
-  //var typeOfInput = document.getElementById("inputDropdown").selectedIndex;
-  
-  //var txt0 = document.getElementById("tb0").value
-  //var txt1 = document.getElementById("tb1").value
-  //var txt2 = document.getElementById("tb2").value
-  
-  //txt0 = getDec(txt0);
-  //txt1 = getDec(txt1);
-  //txt2 = getDec(txt2);
-  
-  //if(typeOfInput == 0){
-    //convertFromAxbyc(txt0, txt1, txt2);
-  //}
-  //if(typeOfInput == 1){
-    //convertFromX1Y1X2Y2(txt0, txt1, txt2);
-  //}
-  //if(typeOfInput == 2){
-    //convertFromXYM(txt0, txt1, txt2);
-  //}
-//}
-
-//// This function handles parsing the user's input and accepting fractions as the inputed values:
-//function getDec(txt){
-  //if(txt.indexOf("/") !== -1){
-    //var s = txt.split('/');
-    //var result = parseInt(s[0], 10) / parseInt(s[1], 10);
-    //return result;
-  //}
-  //else{
-    //return parseFloat(txt);
-  //}
-//}
-
-
-//// This function was not written by Roger, but does seem to do a nice job of handling
-//// the conversion of decimals into improper fractions. Roger found it at the applicable
-//// link below and appreciates the work of the orriginal author.
-//function toFraction(dec) {
-  
-  //// Source: https://stackoverflow.com/a/15193615   And then modified slightly.
-  //var num;
-  //var den
-  //var is_neg = dec < 0;
-  //dec = Math.abs(dec);
-  //var done = false;
-  ////you can adjust the epsilon to a larger number if you don't need very high precision
-  //var n1 = 0, d1 = 1, n2 = 1, d2 = 0, n = 0, q = dec, epsilon = 1e-13;
-  //while (!done){
-    //n++;
-    //if (n > 10000) {
-      //done = true;
-    //}
-    //var a = parseInt(q);
-    //num = n1 + a * n2;
-    //den = d1 + a * d2;
-    //var e = (q - a);
-    //if (e < epsilon) {
-      //done = true;
-    //}
-    //q = 1 / e;
-    //n1 = n2;
-    //d1 = d2;
-    //n2 = num;
-    //d2 = den;
-    //if (Math.abs(num / den - dec) < epsilon || n > 30) {
-      //done = true;
-    //}
-  //}
-  //return [is_neg ? -num : num, den];
-//}
-
-
-//// This function handles turning the final decimals into displayable text.
-//// If the input decimal is not something that is directly displayable, it
-//// will attempt to run it through the toFraction() function to display an
-//// improper fraction if possible.
-//function figureOutHowToDisplayDec(dec){
-  //var decAsStr = " " + dec;
-  //if(decAsStr.indexOf("Infinity") !== -1){return "Infinity";}
-  //if(isNaN(dec)){return "NaN";}
-  ////alert('GotPast ' + dec);
-  //if(dec == 0.0){return "0";}
-  //if(dec == parseInt(dec)){return "" + parseInt(dec);}
-  
-  //var aBack = toFraction(dec);
-  //var numAndDen = "" + aBack[0] + "/" + aBack[1];
-  //if(numAndDen.length > 8){return "" + dec;}
-  //return numAndDen;
-  
-//}
-
-//// This function handles displaying the result of the calculation.
-//function updateOutputBox(m, b){
-  //m = figureOutHowToDisplayDec(m);
-  //b = figureOutHowToDisplayDec(b);
-  
-  //var sym = "";
-  //if(b.charAt(0) !== '-'){sym = "+";}
-  
-  //var outputText = "y=" + m + "x" + sym + b;
-  //document.getElementById("outputbox").value = outputText;
-//}
-
-
-//// The below functions simply handle the algebraic aspect of converting the
-//// applicable form of a line into y=mx+b format:
-
-//function convertFromAxbyc(t0, t1, t2){
-  //var A = t0;
-  //var B = t1;
-  //var C = t2;
-  
-  //var m = -( A / B );
-  //var b = C / B;
-  
-  //updateOutputBox(m, b);
-//}
-
-//function convertFromX1Y1X2Y2(t0, t1, t2){
-  //var x1 = t0;
-  //var y1 = t1;
-  //var x2 = t2;
-  //var y2 = getDec(document.getElementById("tb3").value);
-  
-  //var m = (y2 - y1) / (x2 - x1);
-  //var b = y1 - (m * x1);
-  
-  //updateOutputBox(m, b);
-//}
-
-//function convertFromXYM(t0, t1, t2){
-  //var x = t0;
-  //var y = t1;
-  //var m = t2;
-  //var b = y - (m * x);
-  
-  //updateOutputBox(m, b);
-//}
 
 </script>
 
