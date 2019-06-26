@@ -56,18 +56,18 @@
 <br>
 <button onclick="calculateStuff();">Calculate</button>
 
+
+
+<button onclick="clearCalculator();">Clear</button>
+
 <br>
 <br>
 <br>
 
 
 <script>
-  
-  
 changeComputedValue();
 changePreferedUnitSystem();
-
-  
   
 function clearCalculator(){
   document.getElementById("b0").value = 0;
@@ -121,20 +121,63 @@ function changePreferedUnitSystem(){
 function calculateStuff(){
   // First, let's figure out which unit system they prefer:
   var x = document.getElementById("unitDropdown").selectedIndex;
+  var y = document.getElementById("inputDropdown").selectedIndex;
   if(x == 0){ // If they have selected imperial...
-    calculateImperial();
+    calculateImperial(y);
   }
   else{ // If they haven't selected imperial...
-    calculateMetric();
+    calculateMetric(y);
   }
 }
 
-function calculateImperial(){
-  
+function getInputFromBox(id){
+  return parseFloat(document.getElementById(id).value);
 }
 
-function calculateMetric(){
-  
+function setBoxToVal(id, val){
+  document.getElementById(id).value = val;
+}
+
+function calculateImperial(wtc){
+  if(wtc == 0){ // If they want to know the annual rainfall required...
+    var catchmentAreaInSquareFeet = getInputFromBox("b1");
+    var yearlyWaterRequiredInGalons = getInputFromBox("b2");
+    var inches = (yearlyWaterRequiredInGalons / 0.623376623376623) / catchmentAreaInSquareFeet;
+    setBoxToVal("b0", inches);
+  }
+  if(wtc == 1){ // If they want to know the required catchment area...
+    var annualRainfallInInches = getInputFromBox("b0");
+    var yearlyWaterRequiredInGalons = getInputFromBox("b2");
+    var sqft = yearlyWaterRequiredInGalons / (annualRainfallInInches * 0.623376623376623);
+    setBoxToVal("b1", sqft);
+  }
+  if(wtc == 2){ // If they want to know the yearly amount of water that their system will produce...
+    var annualRainfallInInches = getInputFromBox("b0");
+    var catchmentAreaInSquareFeet = getInputFromBox("b1");
+    var gallons = catchmentAreaInSquareFeet * (annualRainfallInInches * 0.623376623376623);
+    setBoxToVal("b2", gallons);
+  }
+}
+
+function calculateMetric(wtc){
+  if(wtc == 0){ // If they want to know the annual rainfall required...
+    var catchmentAreaInSquareMeters = getInputFromBox("b1");
+    var yearlyWaterRequiredInLiters = getInputFromBox("b2");
+    var centimeters = (yearlyWaterRequiredInLiters / 10) / catchmentAreaInSquareMeters;
+    setBoxToVal("b0", centimeters);
+  }
+  if(wtc == 1){ // If they want to know the required catchment area...
+    var annualRainfallInCentimeters = getInputFromBox("b0");
+    var yearlyWaterRequiredInLiters = getInputFromBox("b2");
+    var sqm = yearlyWaterRequiredInLiters / (annualRainfallInCentimeters * 10);
+    setBoxToVal("b1", sqm);
+  }
+  if(wtc == 2){ // If they want to know the yearly amount of water that their system will produce...
+    var annualRainfallInCentimeters = getInputFromBox("b0");
+    var catchmentAreaInSquareMeters = getInputFromBox("b1");
+    var liters = catchmentAreaInSquareMeters * (annualRainfallInCentimeters * 10);
+    setBoxToVal("b2", liters);
+  }
 }
 
 
