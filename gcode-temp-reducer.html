@@ -2,8 +2,8 @@
 <body>
   
   <h1>Roger's Gcode Temperature Reducer Program.</h1>
-  <p>Welcome to Roger's Gcode Temperature Reducer Program. As someone who works with 3d printers a fair bit, I sometimes find that printing the first layer at a higher temperature and then lowering that temperature after a few layers can be benificial. This program is designed to take Gcode ouput from the "Edit Gcode" feature avaliable in many slicing programs and allow one to smoothly decrease the temperature as the print progresses.</p>
-  <p>Disclamer: This program is still in development at the moment. It may produce unexpected output, produce unsafe output, fail, crash, or otherwise fail to perform as expected at any time. You are responsible for manually checking the gcode that it produces before you give that gcode to your printer to ensure that the output that you are getting is safe and is what you are expecting.</p>
+  <p>Welcome to Roger's Gcode Temperature Reducer Program. As someone who works with 3d printers a fair bit, I sometimes find that printing the first layer at a higher temperature and then lowering that temperature after a few layers can be beneficial. This program is designed to take Gcode output from the "Edit Gcode" feature available in many slicing programs and allow one to smoothly decrease the temperature as the print progresses.</p>
+  <p>Disclaimer: This program is still in development at the moment. It may produce unexpected output, produce unsafe output, fail, crash, or otherwise fail to perform as expected at any time. You are responsible for manually checking the gcode that it produces before you give that gcode to your printer to ensure that the output that you are getting is safe and is what you are expecting.</p>
   <p>Input:</p>
   <textarea rows="20" cols="50" id="inBox">Paste Gcode Here.</textarea>
   
@@ -53,7 +53,7 @@ function run(){
     return;
   }
   if(isNaN(startTemp) || isNaN(endTemp) || isNaN(decrementByNum)){
-    document.getElementById("outBox").value = "Error: One of the numbers you entered could not be procesed. Check that you have filled in all of the fields above with valid information.";
+    document.getElementById("outBox").value = "Error: One of the numbers you entered could not be processed. Check that you have filled in all of the fields above with valid information.";
     return;
   }
   if(startTemp <= endTemp){
@@ -86,9 +86,8 @@ function run(){
     }
   }
   
+  // And finally display the finished result:
   document.getElementById("outBox").value = strToBuildUp;
-  
-  //document.getElementById("outBox").value = "Output:\n" + gcode + "\n" + layerIdentifier + "\n" + startTemp + "\n" + endTemp + "\n" + decrementByNum;
 }
 
 
