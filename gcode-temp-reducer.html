@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+<body>
+  
+  <h1>Roger's Gcode Temperature Reducer Program.</h1>
+  <p>Welcome to Roger's Gcode Temperature Reducer Program. As someone who works with 3d printers a fair bit, I sometimes find that printing the first layer at a higher temperature and then lowering that temperature after a few layers can be benificial. This program is designed to take Gcode ouput from the "Edit Gcode" feature avaliable in many slicing programs and allow one to smoothly decrease the temperature as the print progresses.</p>
+  <p>Disclamer: This program is still in development at the moment. It may produce unexpected output, produce unsafe output, fail, crash, or otherwise fail to perform as expected at any time. You are responsible for manually checking the gcode that it produces before you give that gcode to your printer to ensure that the output that you are getting is safe and is what you are expecting.</p>
+  <p>Input:</p>
+  <textarea rows="20" cols="50" id="inBox">Paste Gcode Here.</textarea>
+  
+  <br>
+  <br>
+  <p style="display: inline">Layer Change Identifier: </p> <input type="text" id="layerDescriber" value=';LAYER:'><br>
+  <br>
+  <p style="display: inline">Start Temp in Degrees C: </p> <input type="number" id="startTemp"><br>
+  <br>
+  <p style="display: inline">End Temp in Degrees C: </p> <input type="number" id="endTemp"><br>
+  <br>
+  <p style="display: inline">Decrease temperature by: </p>
+  <select id="decrementByDropdown">
+    <option value="1">1 degree C each Layer</option>
+    <option value="2">2 degrees C each Layer</option>
+    <option value="3">3 degrees C each Layer</option>
+    <option value="4">4 degrees C each Layer</option>
+    <option value="5">5 degrees C each Layer</option>
+  </select> 
+  <br>
+  <br>
+  
+  <button type="button" onclick="run();">Run</button>
+  <br>
+  <br>
+  <p>Output:</p>
+  <textarea readonly rows="20" cols="50" id="outBox">Output Appears Here.</textarea>
+  <br>
+  <br>
+
+<script>
+
+function run(){
+  var gcode = document.getElementById("inBox").value;
+  var layerIdentifier = document.getElementById("layerDescriber").value;
+  var startTemp = document.getElementById("startTemp").value;
+  var endTemp = document.getElementById("endTemp").value;
+  var e = document.getElementById("decrementByDropdown");
+  var decrementByNum = e.options[e.selectedIndex].value;
+  // Now to parse all the input:
+  startTemp = parseInt(startTemp);
+  endTemp = parseInt(endTemp);
+  decrementByNum = parseInt(decrementByNum);
+  // Now to validate input:
+  if(gcode == "" || gcode == "Paste Gcode Here."){
+    document.getElementById("outBox").value = "Error: There was no Gcode to process. Please enter some Gcode above.";
+    return;
+  }
+  if(isNaN(startTemp) || isNaN(endTemp) || isNaN(decrementByNum)){
+    document.getElementById("outBox").value = "Error: One of the numbers you entered could not be procesed. Check that you have filled in all of the fields above with valid information.";
+    return;
+  }
+  if(startTemp <= endTemp){
+    document.getElementById("outBox").value = "Error: The Start Temp that you entered was less than or equal to the End Temp. Please ensure that the End Temp that you enter is lower than the Start Temp.";
+    return;
+  }
+  if(startTemp <= 40 || endTemp <= 40){
+    document.getElementById("outBox").value = "Error: One of the temperatures that you entered is below 40 degrees C. Trying to print plastic below its melting point will jamb your hotend.";
+    return;
+  }
+  
+  // Now we can actually work some magic:
+  var arrOfLines = gcode.split("\n");
+  var strToBuildUp = "";
+  var continueAddingCmds = true;
+  var layerNumToSearchFor = 2;
+  var layerStrToSearchFor = "" + layerIdentifier + layerNumToSearchFor;
+  var lenOfArr = arrOfLines.length;
+  for (var i=0; i<lenOfArr; i++) {
+    strToBuildUp += arrOfLines[i] + "\n";
+    if(continueAddingCmds && arrOfLines[i] == layerStrToSearchFor){
+      varNewTemp = startTemp - ((layerNumToSearchFor -1) * decrementByNum);
+      if(varNewTemp <= endTemp){
+        continueAddingCmds = false;
+        varNewTemp = endTemp;
+      }
+      layerNumToSearchFor++;
+      strToBuildUp += "M104 S" + varNewTemp + "\n";
+      layerStrToSearchFor = "" + layerIdentifier + layerNumToSearchFor
+    }
+  }
+  
+  document.getElementById("outBox").value = strToBuildUp;
+  
+  //document.getElementById("outBox").value = "Output:\n" + gcode + "\n" + layerIdentifier + "\n" + startTemp + "\n" + endTemp + "\n" + decrementByNum;
+}
+
+
+</script>
+
+<style>
+textarea {
+  white-space: pre;
+  overflow-wrap: normal;
+  overflow-x: scroll;
+}
+</style>
+
+</body>
