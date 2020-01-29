@@ -2,8 +2,8 @@
 <body>
   
   <h1>Roger's Gcode Temperature Reducer Program.</h1>
-  <p>Welcome to Roger's Gcode Temperature Reducer Program. As someone who works with 3d printers a fair bit, I sometimes find that printing the first layer at a higher temperature and then lowering that temperature after a few layers can be beneficial. This program is designed to take Gcode output from the "Edit Gcode" feature available in many slicing programs and allow one to smoothly decrease the temperature as the print progresses.</p>
-  <p>Disclaimer: This program is still in development at the moment. It may produce unexpected output, produce unsafe output, fail, crash, or otherwise fail to perform as expected at any time. You are responsible for manually checking the gcode that it produces before you give that gcode to your printer to ensure that the output that you are getting is safe and is what you are expecting.</p>
+  <p>Welcome to Roger's Gcode Temperature Reducer Program. As someone who works with 3d printers a fair bit, I sometimes find that printing the first layer at a higher temperature and then lowering that temperature after a few layers can be beneficial. This program is designed to take Gcode output from a slicing program and allow one to smoothly decrease the temperature as the print progresses.</p>
+  <p>Important note: ***Use this program at your own risk!*** It is still in development at the moment. It may produce unsafe output, produce unexpected output, fail, crash, or otherwise not perform as expected at any time. You are responsible for manually checking the gcode that it produces before you give that gcode to your printer! If you don’t know how to manually check your gcode to ensure that it is safe to give to your printer, please learn how to do that before attempting to use this program! This is not an optional step. Sending incorrect gcode commands to your 3d printer could potentially cause it to catch fire! Do not underestimate the importance of manually checking the output of this program!</p>
   <p>Input:</p>
   <textarea rows="20" cols="50" id="inBox">Paste Gcode Here.</textarea>
   
@@ -75,13 +75,13 @@ function run(){
   for (var i=0; i<lenOfArr; i++) {
     strToBuildUp += arrOfLines[i] + "\n";
     if(continueAddingCmds && arrOfLines[i] == layerStrToSearchFor){
-      varNewTemp = startTemp - ((layerNumToSearchFor -1) * decrementByNum);
-      if(varNewTemp <= endTemp){
+      var newTemp = startTemp - ((layerNumToSearchFor -1) * decrementByNum);
+      if(newTemp <= endTemp){
         continueAddingCmds = false;
-        varNewTemp = endTemp;
+        newTemp = endTemp;
       }
       layerNumToSearchFor++;
-      strToBuildUp += "M104 S" + varNewTemp + "\n";
+      strToBuildUp += "M104 S" + newTemp + "\n";
       layerStrToSearchFor = "" + layerIdentifier + layerNumToSearchFor
     }
   }

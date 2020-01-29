@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<body>
+  
+  <h1>Roger's Temperature Tower Program.</h1>
+  <p>Welcome to Roger's Temperature Tower Program. I created this program so that all those who 3d print things could easily create temperature towers. It takes Gcode as an input and inserts temperature reduction commands at relevant points based on the height of the object. That way, the temperature is reduced by the specified interval as the print progresses.</p>
+  <p>Important note: ***Use this program at your own risk!*** It is still in development at the moment. It may produce unsafe output, produce unexpected output, fail, crash, or otherwise not perform as expected at any time. You are responsible for manually checking the gcode that it produces before you give that gcode to your printer! If you don’t know how to manually check your gcode to ensure that it is safe to give to your printer, please learn how to do that before attempting to use this program! This is not an optional step. Sending incorrect gcode commands to your 3d printer could potentially cause it to catch fire! Do not underestimate the importance of manually checking the output of this program!</p>
+  <p>Input:</p>
+  <textarea rows="20" cols="50" id="inBox">Paste Gcode Here.</textarea>
+  
+  <br>
+  <br>
+  <p style="display: inline">Decrease temperature by: </p>
+  <select id="decrementByDropdown">
+    <option value="1">1 degree</option>
+    <option value="2">2 degrees</option>
+    <option value="3">3 degrees</option>
+    <option value="4">4 degrees</option>
+    <option value="5">5 degrees</option>
+    <option value="6">6 degrees</option>
+    <option value="7">7 degrees</option>
+    <option value="8">8 degrees</option>
+    <option value="9">9 degrees</option>
+    <option value="10">10 degrees</option>
+  </select> celsius every
+  <p style="display: inline"> </p> <input type="number" id="millimetersBox" step="0.00000000000001">Millimeters.<br>
+  <br>
+  <p style="display: inline">Start Temp in Degrees C: </p> <input type="number" id="startTemp"><br>
+  <br>
+  <p style="display: inline">End Temp in Degrees C: </p> <input type="number" id="endTemp"><br>
+  <br>
+  <p style="display: inline">Ignore the first: </p> <input type="number" id="numZValsToIgnore" value="3"> Z values seen.<br>
+  <br>
+  
+  <button type="button" onclick="run();">Run</button>
+  <br>
+  <br>
+  <p>Output:</p>
+  <textarea readonly rows="20" cols="50" id="outBox">Output Appears Here.</textarea>
+  <br>
+  <br>
+
+<script>
+
+function run(){
+  var gcode = document.getElementById("inBox").value;
+  var e = document.getElementById("decrementByDropdown");
+  var decrementByNum = e.options[e.selectedIndex].value;
+  var mill = document.getElementById("millimetersBox").value;
+  var startTemp = document.getElementById("startTemp").value;
+  var endTemp = document.getElementById("endTemp").value;
+  var numZValsToIgnore = document.getElementById("numZValsToIgnore").value;
+  
+  // Now to parse all the input:
+  decrementByNum = parseInt(decrementByNum);
+  mill = parseFloat(mill);
+  startTemp = parseInt(startTemp);
+  endTemp = parseInt(endTemp);
+  numZValsToIgnore = parseInt(numZValsToIgnore);
+  // Now to validate input:
+  if(gcode == "" || gcode == "Paste Gcode Here."){
+    document.getElementById("outBox").value = "Error: There was no Gcode to process. Please enter some Gcode above.";
+    return;
+  }
+  if(isNaN(mill) || isNaN(startTemp) || isNaN(endTemp) || isNaN(numZValsToIgnore)){
+    document.getElementById("outBox").value = "Error: One of the numbers you entered could not be processed. Check that you have filled in all of the fields above with valid information.";
+    return;
+  }
+  if(startTemp <= endTemp){
+    document.getElementById("outBox").value = "Error: The Start Temp that you entered was less than or equal to the End Temp. Please ensure that the End Temp that you enter is lower than the Start Temp.";
+    return;
+  }
+  if(startTemp <= 40 || endTemp <= 40){
+    document.getElementById("outBox").value = "Error: One of the temperatures that you entered is below 40 degrees C. Trying to print plastic below its melting point will jamb your hotend.";
+    return;
+  }
+  if(numZValsToIgnore <= 1){
+    document.getElementById("outBox").value = "Error: You must ignore at least the first 2 z-values in the gcode. These are likely to be parking positions or something similar. Thus, no temperature change is necessary.";
+    return;
+  }
+  
+  // Now we need to calculate the number of degrees to decrease by each time the given height is found:
+  
+  
+  // Now we can actually work some magic:
+  var arrOfLines = gcode.split("\n");
+  var strToBuildUp = "";
+  var numZValsSeen = 0;
+  var listOfZVals = [];
+  var sectionOfPartNum = 1;
+  var finishedAddingCmds = false;
+  var heightWeAreLookingFor = mill;
+  var multiplierForTemp = 1;
+  
+  // Here comes my wonderfly magical for loop. Oh boy...
+  var lenOfArr = arrOfLines.length;
+  for (var i=0; i<lenOfArr; i++) {
+    var currentPiece = arrOfLines[i];
+    strToBuildUp += currentPiece + "\n";
+    // If current piece has ; strip out stuff after ;
+    if(currentPiece.indexOf(";") !== -1){
+      currentPiece = currentPiece.substring(0, currentPiece.indexOf(";"));
+    }
+    // Now let's search for z-values:
+    var indexOfZNum = currentPiece.indexOf(" Z");
+    if(indexOfZNum !== -1){
+      //If we find a z-value in the current piece of gcode, then increment the number of z-values seen:
+      numZValsSeen++;
+      if(numZValsSeen > numZValsToIgnore && !finishedAddingCmds){
+        // If this z-value is beyond the ingnore interval and we are still good to add in more commands...
+        // Parse out the actual float value:
+        var currHeight = currentPiece.substring(indexOfZNum + 2);
+        if(currHeight.indexOf(" ") !== -1){
+          currHeight = currHeight.substring(0, currHeight.indexOf(" "));
+        }
+        currHeight = parseFloat(currHeight);
+        // With the actual z-value in hand, push it into the array and...
+        listOfZVals.push(currHeight);
+        if(listOfZVals.length > 1){
+          // Test to see if it is less than the privious value: (Indicating it is time to stop adding commands)
+          if(currHeight <= listOfZVals[listOfZVals.length - 2]){
+            finishedAddingCmds = true;
+            continue;
+          }
+          // With that out of the way, let's see if this height is greater than the height that we are looking for:
+          if(currHeight >= heightWeAreLookingFor){
+            // If it is, calculate the new temp:
+            var newTemp = startTemp - (multiplierForTemp * decrementByNum);
+            // Make sure it isn't past the ending temp:
+            if(newTemp < endTemp){
+              finishedAddingCmds = true;
+              continue;
+            }
+            // Increment the relevent variables as necessary and insert the command:
+            multiplierForTemp++;
+            heightWeAreLookingFor+=mill;
+            strToBuildUp += "M104 S" + newTemp + "\n";
+          }
+        }
+      }
+    }
+  }
+  
+  // And finally display the finished result:
+  document.getElementById("outBox").value = strToBuildUp;
+}
+
+
+</script>
+
+<style>
+textarea {
+  white-space: pre;
+  overflow-wrap: normal;
+  overflow-x: scroll;
+}
+</style>
+
+</body>
